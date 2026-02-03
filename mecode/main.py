@@ -418,7 +418,7 @@ class G(object):
             if self.footer is not None:
                 with open(self.footer) as fd:
                     self._write_out(lines=fd.readlines())
-            if self.outfile is None:
+            if self.outfile is not None:
                 self.out_fd.close()
         if self._socket is not None:
             self._socket.close()
