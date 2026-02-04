@@ -430,6 +430,27 @@ class G(object):
         """
         self.abs_move(x=0, y=0)
 
+    def rel_move(self, x=None, y=None, z=None, rapid=False):
+        """
+        Do a move to relative coordinates, irrespective of the current motion mode.
+
+        If the machine is in absolute mode, this translates the relative move into absolute coords
+        """
+        move_kwargs = {"rapid" : rapid}
+        
+        if self.is_relative:
+            move_kwargs["x"] = x
+            move_kwargs["y"] = y
+            move_kwargs["z"] = z
+        else:
+            axes = [("x", x), ("y", y), ("z", z)]
+            for axis, delta in axes:
+                if delta:
+                    assert axis in self.current_position
+                    move_kwargs[axis] = self.current_position[axis] + delta
+
+        self.move(**move_kwargs)
+
     def move(self, x=None, y=None, z=None, rapid=False, **kwargs):
         """ Move the tool head to the given position. This method operates in
         relative mode unless a manual call to `absolute` was given previously.
